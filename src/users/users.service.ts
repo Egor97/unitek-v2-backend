@@ -1,13 +1,14 @@
 import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
-import {User} from "./users.model";
+import {User} from "./entities/users.entity";
 import {CreateUserDto} from "../auth/dto/create-user.dto";
-import {UsersUtils} from "./users.utils";
+import {UsersUtils} from "./utils/users.utils";
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User) private userRepository: typeof User,
+    constructor(@InjectModel(User)
+                private userRepository: typeof User,
                 private usersUtils: UsersUtils) {}
 
     async createUser(dto: CreateUserDto): Promise<User> {
@@ -27,3 +28,4 @@ export class UsersService {
         return await this.userRepository.findOne({where: {email: email}});
     }
 }
+

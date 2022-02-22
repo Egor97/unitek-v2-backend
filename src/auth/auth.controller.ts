@@ -1,5 +1,5 @@
 import {Body, Controller, Get, Post} from "@nestjs/common";
-import {User} from "../users/users.model";
+import {User} from "../users/entities/users.entity";
 import {AuthService} from "./auth.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 

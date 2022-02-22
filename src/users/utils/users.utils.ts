@@ -1,6 +1,6 @@
 import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
-import { CreateUserDto } from "../auth/dto/create-user.dto";
-import { CreateUserDbDto } from "./create-user-db.dto";
+import { CreateUserDto } from "../../auth/dto/create-user.dto";
+import { CreateUserDbDto } from "../dto/create-user-db.dto";
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
