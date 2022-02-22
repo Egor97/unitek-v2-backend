@@ -3,26 +3,27 @@ import {Column, Comment, DataType, Model, Table} from "sequelize-typescript";
 @Table({tableName: "users"})
 export class User extends Model<User> {
 
-    @Column({type: DataType.STRING, unique: true, autoIncrement: true, primaryKey: true})
     @Comment("Идентификатор пользователя")
-    id: string;
+    @Column({type: DataType.STRING, unique: true, primaryKey: true})
+    uuid: string;
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
     @Comment("Email пользователя")
+    @Column({type: DataType.STRING, unique: true, allowNull: false})
     email: string;
 
-    @Column({type: DataType.STRING, allowNull: false})
     @Comment("Пароль пользователя (Хранится в хешированной функции)")
+    @Column({type: DataType.STRING, allowNull: false})
     password: string;
 
-    @Column({type: DataType.STRING, allowNull: false})
     @Comment("Имя пользователя")
-    name: string;
     @Column({type: DataType.STRING, allowNull: false})
+    name: string;
+
     @Comment("Фамилия пользователя")
+    @Column({type: DataType.STRING, allowNull: false})
     lastname: string;
 
-    @Column({type: DataType.STRING, allowNull: false})
     @Comment("Контактный телефон пользователя")
+    @Column({type: DataType.STRING, allowNull: false})
     phone: string;
 }
