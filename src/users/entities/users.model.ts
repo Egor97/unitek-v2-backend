@@ -1,7 +1,8 @@
-import {BelongsToMany, Column, Comment, DataType, Model, Table} from "sequelize-typescript";
+import {BelongsToMany, Column, Comment, DataType, HasOne, Model, Table} from "sequelize-typescript";
 import {ApiProperty, ApiTags} from "@nestjs/swagger";
 import {Role} from "../../roles/entities/roles.model";
 import {UserRoles} from "../../roles/entities/user-roles.model";
+import {Token} from "../../auth/entities/token.model";
 
 interface UserCreationAttrs {
     uuid: string;
@@ -43,6 +44,11 @@ export class User extends Model<User, UserCreationAttrs> {
     @Column({type: DataType.STRING, allowNull: true, defaultValue: ''})
     phone: string;
 
+    @ApiProperty({example: 'USER', description: 'Храним роли пользователя'})
     @BelongsToMany(() => Role, () => UserRoles)
     roles: Role[];
+
+    @ApiProperty({example: 'USER', description: 'Храним токен пользователя'})
+    @HasOne(() => Token)
+    token: string;
 }
