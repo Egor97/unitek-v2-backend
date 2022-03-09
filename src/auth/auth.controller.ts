@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post} from "@nestjs/common";
+import {Body, Controller, Post} from "@nestjs/common";
 import {AuthService} from "./auth.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {LoginUserDto} from "./dto/login-user.dto";
@@ -10,16 +10,32 @@ export class AuthController {
     constructor(private authService: AuthService) {}
 
     @ApiOperation({summary: "Регистрация пользователя"})
-    @ApiResponse({status: 201, type: String, description: 'Токен доступа'})
+    @ApiResponse({status: 201, type: Boolean})
     @Post('registration')
-    registration(@Body() dto: CreateUserDto): Promise<{ accessToken: string, refreshToken: string }> {
+    registration(@Body() dto: CreateUserDto): Promise<boolean> {
         return this.authService.registration(dto);
     }
 
     @ApiOperation({summary: "Авторизация пользователя"})
     @ApiResponse({status: 201, type: String, description: 'Токен доступа'})
     @Post('login')
-    login(@Body() dto: LoginUserDto): Promise<{ accessToken: string, refreshToken: string }> {
+    login(@Body() dto: LoginUserDto): Promise<{ accessToken: string }> {
         return this.authService.login(dto);
+    }
+
+    @ApiOperation({summary: 'Проверка текущего пользователя'})
+    @ApiResponse({status: 201, type: Boolean, description: ''})
+    @Post('check')
+    check(@Body() dto: LoginUserDto): Promise<boolean> {
+        return this.authService.check(dto);
+    }
+
+    access() {}
+
+    @ApiOperation({summary: 'Выход'})
+    @ApiResponse({status: 201, description: 'Выход из учетной записи'})
+    @Post('logout')
+    logout() {
+        this.authService.logout();
     }
 }

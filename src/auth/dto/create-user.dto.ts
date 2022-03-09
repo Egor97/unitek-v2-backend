@@ -24,5 +24,5 @@ export class CreateUserDto {
     @ApiProperty({example: '9 999 999 99 99', description: 'Контакный телефон пользователя ' +
             '(Необязательное поле)'})
     @IsString({message: 'Должно быть строкой'})
-    readonly phone?: string;
+    readonly phone: string | undefined;
 }

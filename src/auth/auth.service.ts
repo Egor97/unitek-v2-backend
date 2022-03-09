@@ -4,44 +4,56 @@ import {UsersService} from "../users/users.service";
 import {LoginUserDto} from "./dto/login-user.dto";
 import {User} from "../users/entities/users.model";
 import * as bcrypt from 'bcryptjs';
-import {JwtService} from "@nestjs/jwt";
+import {TokensService} from "../tokens/tokens.service";
 
 @Injectable()
 export class AuthService {
 
     constructor(private usersService: UsersService,
-                private jwtService: JwtService) {}
+                private tokensService: TokensService) {}
 
-    async registration(dto: CreateUserDto): Promise<{ accessToken: string, refreshToken: string }> {
+    async registration(dto: CreateUserDto): Promise<boolean> {
 
         const candidate = await this.usersService.getUserByEmail(dto.email);
         if (candidate) {
-            throw new BadRequestException(`Пользователь с email ${dto.email} - уже существует`);
+            throw new BadRequestException(`Пользователь с email уже существует`);
         }
-
         try {
             const hashPassword = await bcrypt.hash(dto.password, 5);
             const user = await this.usersService.createUser({...dto, password: hashPassword});
-            return this.generateToken(user);
+            if (user) {
+                return true;
+            }
+            return false;
         } catch (e) {
+            if (await this.usersService.getUserByEmail(dto.email)) {
+                await this.usersService.deleteUser(dto.email);
+            }
             throw new HttpException('Не удалось создать пользователя', HttpStatus.BAD_REQUEST)
         }
     }
 
-    async login(dto: LoginUserDto): Promise<{ accessToken: string, refreshToken: string }> {
+    async login(dto: LoginUserDto): Promise<{ accessToken: string }> {
         const user = await this.validateUser(dto);
-        return this.generateToken(user);
+        const refreshToken = await this.tokensService.createRefreshToken(user);
+        // if (refreshToken) {
+        //     await user.$add('token', refreshToken.token);
+        // }
+        return this.tokensService.generateAccessToken(user);
     }
 
-    private async generateToken(user: User): Promise<{accessToken: string, refreshToken: string}> {
-        // add refresh token
-        //roles: user.roles add in payload
-        const accessPayload = {email: user.email, uuid: user.uuid}
-        const refreshPayload = {uuid: user.uuid, email: user.email, password: user.password}
-        return {
-            accessToken: this.jwtService.sign(accessPayload),
-            refreshToken: this.jwtService.sign(refreshPayload)
+    async check(dto: LoginUserDto): Promise<boolean> {
+        const user = await this.usersService.getUserByEmail(dto.email);
+
+        if (user) {
+            return true;
         }
+        
+        return false;
+    }
+
+    async logout() {
+        return
     }
 
     private async validateUser(userDto: LoginUserDto): Promise<User> {
@@ -56,9 +68,5 @@ export class AuthService {
         }
 
         throw new UnauthorizedException({message: 'Email или пароль не совпадают'});
-    }
-
-    async verifyToken(token: string)  {
-        return this.jwtService.verify(token);
     }
 }

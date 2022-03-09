@@ -2,7 +2,7 @@ import {BelongsToMany, Column, Comment, DataType, HasOne, Model, Table} from "se
 import {ApiProperty, ApiTags} from "@nestjs/swagger";
 import {Role} from "../../roles/entities/roles.model";
 import {UserRoles} from "../../roles/entities/user-roles.model";
-import {Token} from "../../auth/entities/token.model";
+import {Token} from "../../tokens/entities/token.model";
 
 interface UserCreationAttrs {
     uuid: string;
@@ -48,7 +48,7 @@ export class User extends Model<User, UserCreationAttrs> {
     @BelongsToMany(() => Role, () => UserRoles)
     roles: Role[];
 
-    @ApiProperty({example: 'USER', description: 'Храним токен пользователя'})
-    @HasOne(() => Token)
-    token: string;
+    // @ApiProperty({example: 'USER', description: 'Храним токен пользователя'})
+    // @HasOne(() => Token)
+    // token: string;
 }

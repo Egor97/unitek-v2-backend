@@ -7,7 +7,8 @@ import {User} from "./users/entities/users.model";
 import { RolesModule } from './roles/roles.module';
 import {Role} from "./roles/entities/roles.model";
 import {UserRoles} from "./roles/entities/user-roles.model";
-import {Token} from "./auth/entities/token.model";
+import {Token} from "./tokens/entities/token.model";
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   controllers: [],
@@ -28,7 +29,8 @@ import {Token} from "./auth/entities/token.model";
       }),
       AuthModule,
       RolesModule,
-      UsersModule
+      UsersModule,
+      TokensModule
   ],
 
 })

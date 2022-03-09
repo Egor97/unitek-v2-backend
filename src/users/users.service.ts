@@ -37,5 +37,10 @@ export class UsersService {
             return user;
         }
     }
+
+    async deleteUser(email: string): Promise<void> {
+        const user = await this.getUserByEmail(email);
+        return await user.destroy();
+    }
 }
 
